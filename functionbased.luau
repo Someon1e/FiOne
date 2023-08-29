@@ -616,8 +616,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 		-- level 1
 		if op == 22 then
 			-- JMP
-			local inst_sBx = inst.sBx
-			local jump = inst_pc + 1 + inst_sBx
+			local jump = inst_pc + 1 + inst.sBx
 			compiled[inst_pc] = function()
 				pc = jump
 			end
@@ -708,10 +707,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 
 			local pc_after_sBx = inst_pc + 1 + proto_code[inst_pc + 1].sBx
 			compiled[inst_pc] = function()
-				if (not memory[inst_A]) ~= inst_C then
-					pc = pc_after_sBx
-				end
-				pc = pc + 1
+				pc = if (not memory[inst_A]) ~= inst_C then pc_after_sBx + 1 else pc + 1
 			end
 			-- level 3
 		elseif op == 12 then
@@ -1270,7 +1266,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						end
 					else
 						compiled[inst_pc] = function()
-							if not (inst_const_B <= memory[inst_C]) then
+							if inst_const_B > memory[inst_C] then
 								pc = pc + sBx
 							end
 							pc = pc + 1
@@ -1288,7 +1284,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						end
 					else
 						compiled[inst_pc] = function()
-							if not (memory[inst_B] <= inst_const_C) then
+							if memory[inst_B] > inst_const_C then
 								pc = pc + sBx
 							end
 							pc = pc + 1
@@ -1304,7 +1300,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						end
 					else
 						compiled[inst_pc] = function()
-							if not (memory[inst_B] <= memory[inst_C]) then
+							if memory[inst_B] > memory[inst_C] then
 								pc = pc + sBx
 							end
 							pc = pc + 1
@@ -1576,7 +1572,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 				end
 			end
 		else
-			error("Unknown opcode: " .. op)
+			_error("Unknown opcode: " .. op)
 		end
 	end
 
