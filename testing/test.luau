@@ -866,6 +866,7 @@ local s = os.clock()
 for i =1, 13 do chess() end
 print(os.clock() -  s)
 ]]
+
 local compiled = compiler(source)
 
 print("Function based")

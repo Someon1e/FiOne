@@ -1069,8 +1069,15 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 			-- NEWTABLE
 			local inst_A = inst.A
 			local inst_const = inst.const
-			compiled[inst_pc] = function()
-				memory[inst_A] = table_create(inst_const)
+
+			if inst_const == 0 then
+				compiled[inst_pc] = function()
+					memory[inst_A] = {}
+				end
+			else
+				compiled[inst_pc] = function()
+					memory[inst_A] = table_create(inst_const)
+				end
 			end
 		elseif op == 20 then
 			-- LEN
