@@ -1591,8 +1591,6 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 					local inst_data_A = inst_data.A
 					local inst_data_B = inst_data.B
 
-					local len = if inst_data_B == 0 then top_index - inst_data_A + 1 else inst_data_B - 1
-
 					for i, uv in open_list do
 						local uv_index = uv.index
 						if uv_index >= 0 then
@@ -1603,14 +1601,12 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						end
 					end
 
-					return table_unpack(memory, inst_data_A, inst_data_A + len - 1)
+					return table_unpack(memory, inst_data_A, if inst_data_B == 0 then top_index else inst_data_B - 2 + inst_data_A)
 				elseif inst_data_op == 29 then
 					-- TAILCALL
 					local inst_data_A = inst_data.A
 					local inst_data_B = inst_data.B
 
-					local params = if inst_data_B == 0 then top_index - inst_data_A else inst_data_B - 1
-
 					for i, uv in open_list do
 						local uv_index = uv.index
 						if uv_index >= 0 then
@@ -1621,7 +1617,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						end
 					end
 
-					return memory[inst_data_A](table_unpack(memory, inst_data_A + 1, inst_data_A + params))
+					return memory[inst_data_A](table_unpack(memory, inst_data_A + 1, if inst_data_B == 0 then top_index else inst_data_B + inst_data_A - 1))
 				end
 				return
 			end
