@@ -1367,19 +1367,15 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 				if inst_C == 0 then
 					local pos = ((inst[inst_pc + 1].value - 1) * 50) + 1 -- FIELDS_PER_FLUSH = 50
 					compiled[inst_pc] = function()
-						local len = top_index - inst_A
-
 						pc = pc + 1
 
-						table_move(memory, inst_A_plus_1, inst_A + len, pos, memory[inst_A])
+						table_move(memory, inst_A_plus_1, top_index, pos, memory[inst_A])
 					end
 				else
 					local pos = ((inst_C - 1) * 50) + 1 -- FIELDS_PER_FLUSH = 50
 
 					compiled[inst_pc] = function()
-						local len = top_index - inst_A
-
-						table_move(memory, inst_A_plus_1, inst_A + len, pos, memory[inst_A])
+						table_move(memory, inst_A_plus_1, top_index, pos, memory[inst_A])
 					end
 				end
 			else
