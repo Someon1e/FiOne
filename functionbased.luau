@@ -1108,17 +1108,18 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						compiled[inst_pc] = add_1_to_pc
 					end
 				else
+					local pc_after_sBx = inst_pc + 1 + sBx
 					if inst_A then
 						compiled[inst_pc] = function()
 							if inst_const_B == memory[inst_C] then
-								pc = pc + sBx
+								pc = pc_after_sBx
 							end
 							pc = pc + 1
 						end
 					else
 						compiled[inst_pc] = function()
 							if inst_const_B ~= memory[inst_C] then
-								pc = pc + sBx
+								pc = pc_after_sBx
 							end
 							pc = pc + 1
 						end
