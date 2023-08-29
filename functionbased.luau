@@ -654,7 +654,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 			local inst_A_plus_1 = inst_A + 1
 			local inst_A_plus_2 = inst_A + 2
 			local inst_A_plus_3 = inst_A + 3
-			local sBx = proto_code[inst_pc + 1].sBx
+			local pc_after_sBx = inst_pc + 1 + proto_code[inst_pc + 1].sBx
 			compiled[inst_pc] = function()
 				table_move(
 					{ memory[inst_A](memory[inst_A_plus_1], memory[inst_A_plus_2]) },
@@ -667,7 +667,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 				local memory_base = memory[inst_A_plus_3]
 				if memory_base ~= nil then
 					memory[inst_A_plus_2] = memory_base
-					pc = pc + sBx
+					pc = pc_after_sBx
 				end
 
 				pc = pc + 1
@@ -706,10 +706,10 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 			local inst_A = inst.A
 			local inst_C = inst.C
 
-			local sBx = proto_code[inst_pc + 1].sBx
+			local pc_after_sBx = inst_pc + 1 + proto_code[inst_pc + 1].sBx
 			compiled[inst_pc] = function()
 				if (not memory[inst_A]) ~= inst_C then
-					pc = pc + sBx
+					pc = pc_after_sBx
 				end
 				pc = pc + 1
 			end
