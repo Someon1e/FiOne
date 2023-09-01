@@ -1439,7 +1439,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 				if inst_C == 0 then
 					local function call(...)
 						local ret_count = _select("#", ...)
-						top_index = inst_A + ret_count - 1
+						top_index = inst_A_minus_1 + ret_count
 
 						for i = 1, ret_count do
 							memory[inst_A_minus_1 + i] = _select(i, ...)
@@ -1460,10 +1460,10 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 				end
 			else
 				if inst_C == 0 then
-					local arg_count = inst_A + inst_B - 1
+					local arg_count = inst_A_minus_1 + inst_B
 					local function call(...)
 						local ret_count = _select("#", ...)
-						top_index = inst_A + ret_count - 1
+						top_index = inst_A_minus_1 + ret_count
 
 						for i = 1, ret_count do
 							memory[inst_A_minus_1 + i] = _select(i, ...)
@@ -1473,7 +1473,7 @@ local function lua_wrap_state(proto: proto, upvals: { uv }?)
 						call(memory[inst_A](table_unpack(memory, inst_A_plus_1, arg_count)))
 					end
 				else
-					local arg_count = inst_A + inst_B - 1
+					local arg_count = inst_A_minus_1 + inst_B
 					local function call(...)
 						for i = 1, inst_C_minus_1 do
 							memory[inst_A_minus_1 + i] = _select(i, ...)
